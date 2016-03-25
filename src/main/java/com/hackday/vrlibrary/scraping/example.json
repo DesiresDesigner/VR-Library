@@ -1,0 +1,29 @@
+{
+  "nodes": [
+    {
+      "id": "id1",
+      "url": "http://wikipedia.org....",
+      "position": [5.63, 4.2, -4.35]
+    }, {
+      "id": "id2",
+      "url": "http://wikipedia.org....",
+      "position": [6.64, 0.22, 1.25]
+    }, {
+      "id": "id3",
+      "url": "http://wikipedia.org....",
+      "position": [11.11, 4.01, -0.04]
+    }
+  ],
+  "edges": [
+    {
+      "source": "id1",
+      "target": "id2",
+      "unidirectional": true
+    },
+    {
+      "source": "id3",
+      "target": "id2",
+      "unidirectional": false
+    }
+  ]
+}
