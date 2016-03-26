@@ -9,11 +9,7 @@ const initialStep = 1;
 
 function preallocateNodes(graph) {
     for (let node of graph.nodes) {
-        node['position'] = {
-            x: Math.random() * 5,
-            y: Math.random() * 5,
-            z: Math.random() * 5
-        }
+        node['position'] = new Point(Math.random() * 5, Math.random() * 5, Math.random() * 5);
     }
 }
 /**
@@ -100,3 +96,10 @@ function embedGraph(graphJSON, onIteration) {
 
     }
 }
+//
+// embedGraph("dffgd{}{}}", graph => {
+//     const { nodes, edges } = graph;
+//     for (let node of nodes) {
+//
+//     }
+// });
