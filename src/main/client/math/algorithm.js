@@ -1,10 +1,13 @@
 /**
  * Created by vesel on 2016-03-26.
  */
+'use strict';
 
 // basic edge length = 1
 
 const standardLength = 1;
+const minimalStep = 0.1;
+const initialStep = 1;
 
 function preallocateNodes(graph) {
     for (let node of graph.nodes) {
@@ -15,7 +18,11 @@ function preallocateNodes(graph) {
         }
     }
 }
-
+/**
+ *
+ * @param nodes
+ * @returns {Map}
+ */
 function makeNodeMap(nodes) {
     const map = new Map();
     for (let node of nodes) {
@@ -26,15 +33,15 @@ function makeNodeMap(nodes) {
 
 /**
  * @param graph
- * @param nodeMap {Map<string, Point>}
+ * @param nodeMap {Map}
  * @returns {number}
  */
 function calculateCost(graph, nodeMap) {
     let loss = 0;
     for (let edge of graph.edges) {
-        const source = nodeMap.get(edge.source);
-        const target = nodeMap.get(edge.target);
-        const squareLength = source.distanceTo(target);
+        const p1 = nodeMap.get(edge.source).position;
+        const p2 = nodeMap.get(edge.target).position;
+        const squareLength = p1.distanceTo(p2);
         loss += Math.abs(standardLength * standardLength - squareLength);
     }
     // const gNodes = graph.nodes;
@@ -49,18 +56,23 @@ function calculateCost(graph, nodeMap) {
 }
 
 /**
+ * Callback for adding two numbers.
+ *
+ * @callback OnInterationCallback
+ * @param graph - An integer.
+ */
+
+/**
  *
  * @param graphJSON {string}
- * @param onIteration OnInterationCallback
- *  * This callback is displayed as a global member.
- * *  @callback OnInterationCallback
+ * @param onIteration {OnInterationCallback}
  */
 function embedGraph(graphJSON, onIteration) {
     const graph = JSON.parse(graphJSON);
     preallocateNodes(graph);
     const nodeMap = makeNodeMap(graph.nodes);
-    let fitness = calculateCost(graph);
-    for (let step = 10; step > minStep; step *= 0.61803398875) {
+    let fitness = calculateCost(graph, nodeMap);
+    for (let step = initialStep; step > minimalStep; step *= 0.61803398875) {
         for (let node of graph.nodes) {
             const initialPosition = {
                 x: node.position.x,
@@ -89,8 +101,4 @@ function embedGraph(graphJSON, onIteration) {
         }
 
     }
-    return calculateCost(graph);
 }
-/**
-
- */
