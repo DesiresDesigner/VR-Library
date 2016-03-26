@@ -1,36 +1,31 @@
 package com.hackday.vrlibrary.scraping;
 
 import org.json.JSONObject;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by vesel on 2016-03-25.
  */
 
 public class Parser {
-
     private JSONObject json;
-
-    /**
-     * fetches the pages from the www
-     * @param url
-     * @param depth
-     */
-    public Parser(URL url, int depth) throws IOException {
-        BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
-        String inputLine;
-        while ((inputLine = in.readLine()) != null)
-            System.out.println(inputLine);
-        in.close();
+    private List<WikiPage> pages;
+    public Parser(URL url, int depth) {
+        // fetches the initial resource (by url)
     }
+
 
     public JSONObject toJSON() {
         return json;
     }
+
 
 }

@@ -1,0 +1,63 @@
+package com.hackday.vrlibrary.scraping;
+
+import org.json.JSONObject;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.util.List;
+
+/**
+ * Created by vesel on 2016-03-26.
+ */
+public class WikiPage {
+    public URL url;
+    public String title;
+    public String content;
+    public List<WikiPage> connections;
+
+    WikiPage(URL url, String title) {
+        this.url = url;
+        this.title = title;
+    }
+
+    WikiPage(URL url, int depth) {
+        WikiPage initial = new WikiPage(url, "dummy title, later change");
+        try {
+            initial.content = fetchResource(url);
+            // finds connections
+            if (depth > 1) {
+                findConnections(initial, depth - 1);
+            }
+            // fetches the neighbours & parses them as well
+        } catch (IOException ex) {
+            System.out.println("fail");
+        }
+    }
+
+    private String fetchResource(URL url) throws IOException {
+        BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
+        String inputLine, str = "";
+        while ((inputLine = in.readLine()) != null) {
+            str += inputLine;
+        }
+        in.close();
+        return str;
+        // TODO: check if functions properly
+        // TODO: rewrite to streams
+    }
+
+    private void findConnections(WikiPage page, int depth) {
+        // TODO
+        List<URL> urls = parseURLs(page);
+        for (URL url : urls) {
+            page.connections.add(new WikiPage(url, depth));
+        }
+    }
+
+    private List<URL> parseURLs(WikiPage page) {
+        throw new NotImplementedException();
+    }
+}
