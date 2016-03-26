@@ -9,8 +9,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
 
 /**
  * Created by vesel on 2016-03-25.
@@ -51,7 +53,20 @@ public class WikiAdapter {
         return json;
     }
 
+    private double[] sphericalToCartesian(double r, double theta, double phi) {
+        double sinPhi = Math.sin(phi);
+        return new double[]{r * Math.cos(theta) * sinPhi, r * Math.sin(theta) * sinPhi, r * Math.cos(phi)};
+    }
 
+    private List<double[]> neighborsToSpherical(WikiPage page) {
+        int numConnections = page.connections.size();
+
+        List<double[]> coordinates = new ArrayList<>();
+        for (WikiPage neighbor : page.connections) {
+            coordinates.add(new double[]{1, });
+        }
+        return coordinates;
+    }
 
 
 }
