@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RestController;
  * Created by DesiresDesigner on 3/25/16.
  */
 
-//@RestController
-@Controller
+@RestController
+//@Controller
 public class HelloController {
 
     @RequestMapping("/")
