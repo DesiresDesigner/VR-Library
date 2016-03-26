@@ -20,8 +20,7 @@
   "edges": [
     {
       "source": "id1",
-      "target": "id2",
-      "unidirectional": true
+      "target": "id2"
     },
     {
       "source": "id3",
