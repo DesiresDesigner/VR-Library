@@ -18,14 +18,14 @@ public class WikiPage {
     public String content;
     public List<WikiPage> connections;
 
-    WikiPage(URL url, String title) {
+    public WikiPage(URL url, String title) {
         this.url = url;
         this.title = title;
     }
 
-    WikiPage(URL url, int depth) {
-        WikiPage initial = new WikiPage(url, "dummy title, later change");
+    public WikiPage(URL url, int depth) {
         try {
+            WikiPage initial = new WikiPage(url, "dummy title, change later");
             initial.content = fetchResource(url);
             // finds connections
             if (depth > 1) {
