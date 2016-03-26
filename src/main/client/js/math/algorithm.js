@@ -68,11 +68,7 @@ function embedGraph(graphJSON, onIteration) {
     let fitness = calculateCost(graph, nodeMap);
     for (let step = initialStep; step > minimalStep; step *= 0.61803398875) {
         for (let node of graph.nodes) {
-            const initialPosition = {
-                x: node.position.x,
-                y: node.position.y,
-                z: node.position.z
-            };
+            const initialPosition = new Point(node.position.x, node.position.y, node.position.z);
             let hasChanged = false;
             for (let max = step, x = -max; x <= max; x += step) {
                 node.position.x = initialPosition.x + x;
