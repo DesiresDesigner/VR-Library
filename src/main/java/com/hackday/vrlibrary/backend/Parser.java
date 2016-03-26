@@ -6,10 +6,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -17,17 +14,119 @@ import java.util.regex.Pattern;
  * Created by DesiresDesigner on 3/26/16.
  */
 public class Parser {
+    private String name;
+    Element body;
+    List<Elements> blocks;
+    Map<String, List<String>> linkMap;
+
+    Parser(String url) throws IOException {
+        Document doc = Jsoup.connect(url).get();
+        body = doc.body();
+        blocks = new ArrayList<>();
+        linkMap = new HashMap<>();
+
+        name = doc.select("title").html();
+        name = name.replace(" — Википедия", "");
+    }
+
+    private void generateMainInfoBlock() {
+        Element sibling = body.select("#mw-content-text").select("p").get(0);
+        blocks.add(new Elements());
+        while (sibling != null) {
+            if (sibling.tagName() == "h2" || sibling.id().equals("toc")) {
+                break;
+            }
+            blocks.get(0).add(sibling);
+            sibling = sibling.nextElementSibling();
+        }
+    }
+
+    private void generateContentBlocks() {
+        int index = 0;
+        Element sibling = body.select("#mw-content-text").select("h2").get(1);
+        while (sibling != null) {
+            if (sibling.tagName() == "h2") {
+                ++index;
+                blocks.add(new Elements());
+            }
+            blocks.get(index).add(sibling);
+            sibling = sibling.nextElementSibling();
+        }
+    }
+
+    private void parseBlocks() {
+        Pattern sentenceRegex = Pattern.compile("(.+?\\. )|(.+(\\.\\.))"),
+                linkRegex = Pattern.compile("href=\"(.*?)\"");
+
+        for (Elements block : blocks) {
+            String topic = block.select("h2").html();
+            topic = topic.replaceAll("<[^>]*>", "");
+            topic = topic.replaceAll("\\[править \\| править вики-текст\\]", "");
+            for (Element child : block) {
+                String text = child.html();
+                text = text.replaceAll("(<\\/li>)|(<\\/div>)|(<\\/p>)|(<br>)|(<br\\/>|(<br \\/>))", ".");
+                text = text.replaceAll("<(?!\\/?a(?=>|\\s.*>))\\/?.*?>", " ");
+                Matcher mSentence = sentenceRegex.matcher(text);
+                while (mSentence.find()) {
+                    Matcher mLink = linkRegex.matcher(mSentence.group());
+                    String sentence = mSentence.group().replaceAll("<[^>]*>", "");
+                    while (mLink.find()) {
+                        String link = mLink.group();
+                        link = link.replaceAll("(href=)|(\")", "");
+                        if (!linkMap.containsKey(link))
+                            linkMap.put(link, new ArrayList<>());
+                        linkMap.get(link).add(topic + ": " + sentence);
+                    }
+                }
+            }
+        }
+    }
+
+    public void parse() {
+        blocks.clear();
+        linkMap.clear();
+        generateMainInfoBlock();
+        generateContentBlocks();
+        parseBlocks();
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Map<String, List<String>> getLinkMap() {
+        return linkMap;
+    }
 
     public static void main(String[] args) throws IOException {
-        Document doc = Jsoup.connect("https://ru.wikipedia.org/wiki/%D0%A2%D1%91%D0%BC%D0%BD%D0%B0%D1%8F_%D0%91%D0%B0%D1%88%D0%BD%D1%8F_%28%D1%86%D0%B8%D0%BA%D0%BB%29").get();
+        Parser parser = new Parser("https://ru.wikipedia.org/wiki/%D0%A2%D1%91%D0%BC%D0%BD%D0%B0%D1%8F_%D0%91%D0%B0%D1%88%D0%BD%D1%8F_%28%D1%86%D0%B8%D0%BA%D0%BB%29");
+        parser.parse();
+        System.out.println(parser.getName());
+        Map<String, List<String>> linkMap = parser.getLinkMap();
+        for (String key : linkMap.keySet()) {
+            System.out.println(key + "   :");
+            for (String sentence : linkMap.get(key)) {
+                System.out.println("----------- " + sentence);
+            }
+        }
+
+        /*Document doc = Jsoup.connect("https://ru.wikipedia.org/wiki/%D0%A2%D1%91%D0%BC%D0%BD%D0%B0%D1%8F_%D0%91%D0%B0%D1%88%D0%BD%D1%8F_%28%D1%86%D0%B8%D0%BA%D0%BB%29").get();
         Element body = doc.body();
-        //Elements links = body.select("a[href]");
-        //Elements topics = body.getElementsByClass("mw-headline");
 
         List<Elements> blocks = new ArrayList<>();
-        int index = -1;
+        int index = 0;
 
-        Element sibling = body.select("#mw-content-text").select("h2").get(1);
+        //Element sibling = body.select("#mw-content-text").select("h2").get(1);
+        Element sibling = body.select("#mw-content-text").select("p").get(0);
+        blocks.add(new Elements());
+        while (sibling != null) {
+            if (sibling.tagName() == "h2" || sibling.id().equals("toc")) {
+                break;
+            }
+            blocks.get(index).add(sibling);
+            sibling = sibling.nextElementSibling();
+        }
+        sibling = body.select("#mw-content-text").select("h2").get(1);
         while (sibling != null) {
             if (sibling.tagName() == "h2") {
                 ++index;
@@ -40,7 +139,6 @@ public class Parser {
         Pattern sentenceRegex = Pattern.compile("(.+?\\. )|(.+(\\.\\.))"),
                 linkRegex = Pattern.compile("href=\"(.*?)\"");
 
-        Map<String, String> keyMap = new HashMap<>();
         for (Elements block : blocks) {
             for (Element child : block) {
                 String text = child.html();
@@ -60,33 +158,6 @@ public class Parser {
                     System.out.println();
                 }
             }
-        }
+        }*/
     }
 }
-
-/*
-                Matcher linkMatcher = linkRegex.matcher(child.html());
-                while (linkMatcher.find()) {
-                    String link = linkMatcher.group(2);
-                    link = link.substring(0, link.length() - 1);
-
-                    if(link.charAt(0) == '/') {
-                        link = "https://ru.wikipedia.org" + link;
-                    } else if(link.charAt(0) == '#') {
-                        link = null;
-                    }
-
-                    if(link != null) {
-
-                        Matcher nameMatcher = nameRegex.matcher(child.html());
-                        if (nameMatcher.find()) {
-                            String name = nameMatcher.group(2);
-                            keyMap.put(name, link);
-
-                        } else {
-                            keyMap.put("None" + noneId, link);
-                            noneId += 1;
-                        }
-                    }
-                }
- */
