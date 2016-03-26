@@ -36,15 +36,16 @@ function calculateCost(graph, nodeMap) {
         const p1 = nodeMap.get(edge.source).position;
         const p2 = nodeMap.get(edge.target).position;
         const squareLength = p1.distanceTo(p2);
+        // edge length should be around 1
         loss += Math.abs(standardLength * standardLength - squareLength);
     }
-    // const gNodes = graph.nodes;
-    // for (let i = 0, len = gNodes.length, len1 = len - 1; i < len1; ++i) {
-    //     for (let j = i + 1; j < len; ++j) {
-    //         const length = gNodes[i].position.distanceTo(gNodes[j].position);
-    //
-    //     }
-    // }
+    const gNodes = graph.nodes;
+    for (let i = 0, len = gNodes.length, len1 = len - 1; i < len1; ++i) {
+        for (let j = i + 1; j < len; ++j) {
+            // node repulsion (the bigger the gap between each pair of nodes, the better)
+            loss += 1 / gNodes[i].position.distanceTo(gNodes[j].position);
+         }
+     }
 
     return loss;
 }
