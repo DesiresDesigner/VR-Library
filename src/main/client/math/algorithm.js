@@ -3,10 +3,8 @@
  */
 'use strict';
 
-// basic edge length = 1
-
 const standardLength = 1;
-const minimalStep = 0.1;
+const minimalStep = 0.05;
 const initialStep = 1;
 
 function preallocateNodes(graph) {
@@ -59,7 +57,7 @@ function calculateCost(graph, nodeMap) {
  * Callback for adding two numbers.
  *
  * @callback OnInterationCallback
- * @param graph - An integer.
+ * @param graph - graph.
  */
 
 /**
