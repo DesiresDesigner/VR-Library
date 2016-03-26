@@ -11,27 +11,25 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Created by vesel on 2016-03-25.
  */
 
-public class Parser {
+public class WikiAdapter {
     private JSONObject json;
-    private Set<WikiPage> pages;
-    private Map<String, WikiPage> p;
-    public Parser(URL url, int depth) {
+    private List<WikiPage> pages;
+    public WikiAdapter(URL url, int depth) {
         // fetches the initial resource (by url)
         WikiPage initial = new WikiPage(url, 2);
         json = new JSONObject();
         JSONArray nodes = new JSONArray(),
                 edges = new JSONArray();
-        pages.add(initial);
+
         nodes.put(initial.toJSONObject(initial.title));
 
         for (WikiPage firstLevelNode : initial.connections) {
-            JSONObject o = firstLevelNode.toJSONObject(firstLevelNode.title);
+            nodes.put(firstLevelNode.toJSONObject(firstLevelNode.title));
             JSONObject edge = new JSONObject();
             edge.append("source", initial.title);
             edge.append("target", firstLevelNode.title);
@@ -52,6 +50,8 @@ public class Parser {
     public JSONObject toJSON() {
         return json;
     }
+
+
 
 
 }
