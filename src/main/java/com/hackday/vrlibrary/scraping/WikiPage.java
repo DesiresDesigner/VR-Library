@@ -60,4 +60,28 @@ public class WikiPage {
     private List<URL> parseURLs(WikiPage page) {
         throw new NotImplementedException();
     }
+
+    public JSONObject toJSONObject(String id) {
+        JSONObject obj = new JSONObject();
+        obj.append("id", id);
+        obj.append("url", url);
+        obj.append("title", title);
+        return obj;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        WikiPage wikiPage = (WikiPage) o;
+
+        return url != null ? url.equals(wikiPage.url) : wikiPage.url == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        return url != null ? url.hashCode() : 0;
+    }
 }

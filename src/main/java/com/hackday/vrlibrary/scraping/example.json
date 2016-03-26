@@ -2,17 +2,17 @@
   "nodes": [
     {
       "id": "id1",
-      "name": "Sample Article Name",
+      "title": "Sample Article Name",
       "url": "http://wikipedia.org....",
       "position": [5.63, 4.2, -4.35]
     }, {
       "id": "id2",
-      "name": "Sample Article Name",
+      "title": "Sample Article Name",
       "url": "http://wikipedia.org....",
       "position": [6.64, 0.22, 1.25]
     }, {
       "id": "id3",
-      "name": "Sample Article Name",
+      "title": "Sample Article Name",
       "url": "http://wikipedia.org....",
       "position": [11.11, 4.01, -0.04]
     }
