@@ -33,7 +33,7 @@
       
       spacesphere.material.map.wrapS = THREE.RepeatWrapping; 
       spacesphere.material.map.wrapT = THREE.RepeatWrapping;
-      spacesphere.material.map.repeat.set( 1, 1);
+      spacesphere.material.map.repeat.set(1, 1);
       
       scene.add(spacesphere);
 
@@ -51,6 +51,7 @@
         controls.update();
 
         element.addEventListener('click', fullscreen, false);
+        element.addEventListener('dbclick', jump, false);
 
         window.removeEventListener('deviceorientation', setOrientationControls, true);
       }
@@ -61,7 +62,6 @@
       scene.add(light1);
 
       addPage(5, 0, 0, 'textures/patterns/text.jpg', 1);
-      //moveCameraBetweenNodes(camera.position, {x: -30, x: -30, x: -30})
 
       // window.addEventListener('resize', resize, false);
       // setTimeout(resize, 1);
@@ -127,4 +127,8 @@
       } else if (container.webkitRequestFullscreen) {
         container.webkitRequestFullscreen();
       }
+    }
+
+    function jump() {
+     alert('ass');
     }
