@@ -25,17 +25,27 @@ function makeNodeMap(nodes) {
 }
 
 /**
- *
+ * @param graph
  * @param nodeMap {Map<string, Point>}
- * @param edges
+ * @returns {number}
  */
-function calculateCost(nodeMap, edges) {
-    const nodes = new Map();
+function calculateCost(graph, nodeMap) {
+    let loss = 0;
     for (let edge of graph.edges) {
         const source = nodeMap.get(edge.source);
         const target = nodeMap.get(edge.target);
+        const squareLength = source.distanceTo(target);
+        loss += Math.abs(standardLength * standardLength - squareLength);
     }
+    // const gNodes = graph.nodes;
+    // for (let i = 0, len = gNodes.length, len1 = len - 1; i < len1; ++i) {
+    //     for (let j = i + 1; j < len; ++j) {
+    //         const length = gNodes[i].position.distanceTo(gNodes[j].position);
+    //
+    //     }
+    // }
 
+    return loss;
 }
 
 /**
@@ -49,7 +59,7 @@ function embedGraph(graphJSON, onIteration) {
     const graph = JSON.parse(graphJSON);
     preallocateNodes(graph);
     const nodeMap = makeNodeMap(graph.nodes);
-    let fitness = calculateCost(nodeMap, graph.edges);
+    let fitness = calculateCost(graph);
     for (let step = 10; step > minStep; step *= 0.61803398875) {
         for (let node of graph.nodes) {
             const initialPosition = {
@@ -64,7 +74,7 @@ function embedGraph(graphJSON, onIteration) {
                     node.position.y = initialPosition.y + y;
                     for (let z = -max; z <= max; z += step) {
                         node.position.z = initialPosition.z + z;
-                        const total = calculateCost(nodeMap, graph.edges);
+                        const total = calculateCost(graph, nodeMap);
                         if (total < fitness) {
                             hasChanged = true;
                             fitness = total;

@@ -14,4 +14,22 @@ class Point {
         this.y = y;
         this.z = z;
     }
+
+    /**
+     * 
+     * @param other {Point}
+     * @returns {number}
+     */
+    distanceTo(other) {
+        return Math.sqrt(this.squareDistanceTo(other));
+    }
+
+    /**
+     *
+     * @param other {Point}
+     * @returns {number}
+     */
+    squareDistanceTo(other) {
+        return this.x * other.x + this.y * other.y + this.z * other.z;
+    }
 }
