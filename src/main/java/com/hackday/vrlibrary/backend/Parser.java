@@ -15,9 +15,10 @@ import java.util.regex.Pattern;
  */
 public class Parser {
     private String name;
-    Element body;
-    List<Elements> blocks;
-    Map<String, List<String>> linkMap;
+    private Element body;
+    private String mainInfo;
+    private List<Elements> blocks;
+    private Map<String, List<String>> linkMap;
 
     Parser(String url) throws IOException {
         Document doc = Jsoup.connect(url).get();
@@ -32,13 +33,16 @@ public class Parser {
     private void generateMainInfoBlock() {
         Element sibling = body.select("#mw-content-text").select("p").get(0);
         blocks.add(new Elements());
+        mainInfo = "";
         while (sibling != null) {
             if (sibling.tagName() == "h2" || sibling.id().equals("toc")) {
                 break;
             }
             blocks.get(0).add(sibling);
+            mainInfo += sibling.html();
             sibling = sibling.nextElementSibling();
         }
+        mainInfo = mainInfo.replaceAll("<[^>]*>", "");
     }
 
     private void generateContentBlocks() {
@@ -102,11 +106,18 @@ public class Parser {
         return linkMap;
     }
 
+    public String getMainInfo() {
+        return mainInfo;
+    }
+
     public static void main(String[] args) throws IOException {
         Parser parser = new Parser("https://ru.wikipedia.org/wiki/%D0%A2%D1%91%D0%BC%D0%BD%D0%B0%D1%8F_%D0%91%D0%B0%D1%88%D0%BD%D1%8F_%28%D1%86%D0%B8%D0%BA%D0%BB%29");
         parser.parse();
         System.out.println(parser.getName());
+
         Map<String, List<String>> linkMap = parser.getLinkMap();
+        System.out.println(parser.getMainInfo());
+
         for (String key : linkMap.keySet()) {
             System.out.println(key + "   :");
             for (String sentence : linkMap.get(key)) {
