@@ -74,6 +74,8 @@ public class Parser {
                     while (mLink.find()) {
                         String link = mLink.group();
                         link = link.replaceAll("(href=)|(\")", "");
+                        if (!link.substring(0, 5).equals("/wiki"))
+                            continue;
                         if (!linkMap.containsKey(link))
                             linkMap.put(link, new ArrayList<>());
                         linkMap.get(link).add(topic + ": " + sentence);
