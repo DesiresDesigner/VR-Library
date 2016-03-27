@@ -51,6 +51,8 @@ public class Parser {
         Element sibling = body.select("#mw-content-text").select("h2").get(1);
         while (sibling != null) {
             if (sibling.tagName() == "h2") {
+                if (sibling.html().contains("См. также") || sibling.html().contains("Примечания"))
+                    break;
                 ++index;
                 blocks.add(new Elements());
             }
@@ -80,7 +82,7 @@ public class Parser {
                     while (mLink.find()) {
                         String link = mLink.group();
                         link = link.replaceAll("(href=)|(\")", "");
-                        if (!link.substring(0, 5).equals("/wiki") || sentence == "")
+                        if (!link.substring(0, 5).equals("/wiki") || sentence.length() < 40)
                             continue;
                         if (!linkMap.containsKey(link))
                             linkMap.put(link, new ArrayList<>());
