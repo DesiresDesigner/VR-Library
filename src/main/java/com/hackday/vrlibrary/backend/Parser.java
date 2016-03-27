@@ -55,7 +55,7 @@ public class Parser {
     }
 
     private void parseBlocks() {
-        Pattern sentenceRegex = Pattern.compile("(.+?\\. )|(.+(\\.\\.))"),
+        Pattern sentenceRegex = Pattern.compile("[^.!?\\s][^.!?]*(?:[.!?](?!['\"]?\\s|$)[^.!?]*)*[.!?]?['\"]?(?=\\s|$)"), //(.+?\. )|(.+(\.\.))
                 linkRegex = Pattern.compile("href=\"(.*?)\"");
 
         for (Elements block : blocks) {
@@ -64,17 +64,18 @@ public class Parser {
             topic = topic.replaceAll("\\[править \\| править вики-текст\\]", "");
             for (Element child : block) {
                 String text = child.html();
-                text = text.replaceAll("(<\\/li>)|(<\\/div>)|(<\\/p>)|(<br>)|(<br\\/>|(<br \\/>))", ".");
+                text = text.replaceAll("(<\\/li>)|(<\\/div>)|(<\\/p>)|(<br>)|(<br ?\\/>)|(;)", ".");
                 text = text.replaceAll("<(?!\\/?a(?=>|\\s.*>))\\/?.*?>", " ");
                 text = text.replaceAll("(<\\w+)[^>]*( href=[^ ]*)[^>]*(>)", "$1$2$3");
+                text = text.replaceAll("([A-ZА-Я][a-zа-я]{1,2})\\. ", "$1.");
                 Matcher mSentence = sentenceRegex.matcher(text);
                 while (mSentence.find()) {
                     Matcher mLink = linkRegex.matcher(mSentence.group());
-                    String sentence = mSentence.group().replaceAll("<[^>]*>", "");
+                    String sentence = mSentence.group().replaceAll("<[^>]*>", "").replaceAll("\\\n", "");
                     while (mLink.find()) {
                         String link = mLink.group();
                         link = link.replaceAll("(href=)|(\")", "");
-                        if (!link.substring(0, 5).equals("/wiki"))
+                        if (!link.substring(0, 5).equals("/wiki") || sentence == "")
                             continue;
                         if (!linkMap.containsKey(link))
                             linkMap.put(link, new ArrayList<>());
@@ -129,14 +130,14 @@ public class Parser {
                 "<p>На видеоресурсе <a href=\"/wiki/Youtube.com\" title=\"Youtube.com\" class=\"mw-redirect\">Youtube.com</a> размещено огромное количество трейлеров, имитирующих фильмы о Темной Башне. Официальный Гран-При издательского агентства <i>«Simon &amp; Schuster’s»</i> в конкурсе <i>«Американский стрелок»</i> получил ролик <i>«Встреча Роланда и Брауна»</i><sup id=\"cite_ref-5\" class=\"reference\"><a href=\"#cite_note-5\">[5]</a></sup>, снятый Робертом Дэвидом Кокрейном (<a href=\"/wiki/%D0%90%D0%BD%D0%B3%D0%BB%D0%B8%D0%B9%D1%81%D0%BA%D0%B8%D0%B9_%D1%8F%D0%B7%D1%8B%D0%BA\" title=\"Английский язык\">англ.</a>&#160;<i><span lang=\"en\" xml:lang=\"en\">Robert David Cochrane</span></i>).<sup id=\"cite_ref-6\" class=\"reference\"><a href=\"#cite_note-6\">[6]</a></sup></p>\n" +
                 "<p>В снятом в <a href=\"/wiki/2007_%D0%B3%D0%BE%D0%B4\" title=\"2007 год\">2007&#160;году</a> фильме <a href=\"/wiki/%D0%9C%D0%B3%D0%BB%D0%B0_(%D1%84%D0%B8%D0%BB%D1%8C%D0%BC)\" title=\"Мгла (фильм)\">«Мгла»</a> главный герой, <a href=\"/wiki/%D0%A5%D1%83%D0%B4%D0%BE%D0%B6%D0%BD%D0%B8%D0%BA\" title=\"Художник\">художник</a> Дэвид Драйтон показан рисующим <a href=\"/wiki/%D0%9F%D0%BB%D0%B0%D0%BA%D0%B0%D1%82\" title=\"Плакат\">постер</a> к фильму с Роландом в центре, стоящим перед дверью из железного дерева, с розой и Темной Башней по обеим её сторонам.</p>\n" +
                 "<p>В феврале 2008 Абрамс заявил, что он и Линделоф приступили к написанию чернового варианта сценария<sup id=\"cite_ref-7\" class=\"reference\"><a href=\"#cite_note-7\">[7]</a></sup>. Но в ноябре 2009 Абрамс объявил: «Вряд ли найдётся больший фанат „Тёмной Башни“, чем я, но это наверное хорошая причина тому, чтобы адаптировал этот материал не я. После шести лет работы над сериалом „Остаться в живых“, последнее, чем я хочу быть занят&#160;— это потратить ещё семь лет на адаптацию самого моего любимого цикла книг. Я огромный фанат Стивена Кинга, так что я ужасно боюсь это испортить. Я бы всё отдал, чтобы кто-то другой написал сценарий. Я думаю, что эти фильмы сняты будут, потому что они настолько великолепны. Но только не мной».<sup id=\"cite_ref-8\" class=\"reference\"><a href=\"#cite_note-8\">[8]</a></sup></p>\n" +
-                "<p>8 ";*/
+                "<p>8 ";
 
-        /*String text = "Kakfkd kjdfdvv JKNkj Kjfnj. Kakfkd kjdfdvv JKNkj Kj. Kjhgh. KJHjhbh jhjh jggyvb.";
+        //String text = "Kakfkd kjdfdvv JKNkj Kjfnj. Kakfkd kjdfdvv JKNkj Kj. Kjhgh. KJHjhbh jhjh jggyvb.";
         text = text.replaceAll("(<\\/li>)|(<\\/div>)|(<\\/p>)|(<br>)|(<br\\/>|(<br \\/>))", ".");
         text = text.replaceAll("<(?!\\/?a(?=>|\\s.*>))\\/?.*?>", " ");
 
         text = text.replaceAll("(<\\w+)[^>]*( href=[^ ]*)[^>]*(>)", "$1$2$3");
-        text = text.replaceAll("(<\\w+)[^>]*( href=[^ ]*)[^>]*(>)", "$1$2$3");
+        text = text.replaceAll("([A-ZА-Я][a-zа-я]{1,2})\\. ", "$1.");
 
         //System.out.println(text);
         Pattern sentence1Regex = Pattern.compile("(.+?\\. )|(.+(\\.\\.))"),
