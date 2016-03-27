@@ -21,7 +21,7 @@ public class Parser {
     private List<Elements> blocks;
     private Map<String, List<String>> linkMap;
 
-    Parser(String url) throws IOException {
+    public Parser(String url) throws IOException {
         Document doc = Jsoup.connect(url).get();
         body = doc.body();
         blocks = new ArrayList<>();
