@@ -14,6 +14,7 @@ import java.util.regex.Pattern;
  * Created by DesiresDesigner on 3/26/16.
  */
 public class Parser {
+    private Document doc;
     private String name;
     private Element body;
     private String mainInfo;
@@ -108,6 +109,15 @@ public class Parser {
 
     public String getMainInfo() {
         return mainInfo;
+    }
+
+    public void setUrl(String url) throws IOException {
+        doc = Jsoup.connect(url).get();
+        body = doc.body();
+        blocks.clear();
+        linkMap.clear();
+        name = doc.select("title").html();
+        name = name.replace(" — Википедия", "");
     }
 
     public static void main(String[] args) throws IOException {
